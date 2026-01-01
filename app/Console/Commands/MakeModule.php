@@ -64,6 +64,12 @@ class MakeModule extends Command
             "<h1>{$module} Module</h1>\n"
         );
 
+        // --- module.php ---
+        File::put(
+            "$modulePath/module.php",
+            $this->moduleStub($module, $moduleLower)
+        );
+
         $this->info("Module '{$module}' successfully created in {$modulePath}");
 
         return self::SUCCESS;
@@ -151,4 +157,19 @@ Route::prefix('{$moduleKebab}')->group(function () {
 
 PHP;
     }
+
+    protected function moduleStub(string $module, string $moduleLower): string
+    {
+        return <<<PHP
+<?php
+
+return [
+    'id'      => '{$moduleLower}',
+    'name'    => '{$module}',
+    'route'   => '{$moduleLower}.index',
+];
+
+PHP;
+    }
+
 }

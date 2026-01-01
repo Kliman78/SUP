@@ -3,16 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
 class ModuleServiceProvider extends ServiceProvider
 {
-    public function register(): void
-    {
-        //
-    }
-
     public function boot(): void
     {
         $modulesPath = app_path('Modules');
@@ -21,25 +15,30 @@ class ModuleServiceProvider extends ServiceProvider
             return;
         }
 
-        $modules = File::directories($modulesPath);
+        foreach (File::directories($modulesPath) as $modulePath) {
 
-        foreach ($modules as $modulePath) {
-            $moduleName = basename($modulePath); // Contracts
-            $moduleLower = Str::lower($moduleName); // contracts
+            $moduleConfigFile = $modulePath . '/module.php';
+            if (!File::exists($moduleConfigFile)) {
+                continue;
+            }
 
-            // --- Подключаем routes.php ---
+            $config = require $moduleConfigFile;
+
+            if (!($config['enabled'] ?? false)) {
+                continue;
+            }
+
+            // routes
             $routesFile = $modulePath . '/routes.php';
             if (File::exists($routesFile)) {
                 $this->loadRoutesFrom($routesFile);
             }
 
-            // --- Подключаем views ---
+            // views
             $viewsPath = $modulePath . '/views';
-            if (File::exists($viewsPath)) {
-                $this->loadViewsFrom($viewsPath, $moduleLower);
+            if (File::exists($viewsPath) && !empty($config['id'])) {
+                $this->loadViewsFrom($viewsPath, $config['id']);
             }
-
-            // --- Можно добавить migrations, translations и assets ---
         }
     }
 }
