@@ -1,2 +1,8 @@
-@include('partials.breadcrumbs');
-<h1>Contracts List</h1>
+{{-- @include('partials.breadcrumbs'); --}}
+@extends('layouts.app')
+
+@section('title', 'Contracts')
+
+@section('content')
+    <h1>Contracts</h1>
+@endsection

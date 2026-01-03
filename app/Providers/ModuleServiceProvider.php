@@ -24,9 +24,9 @@ class ModuleServiceProvider extends ServiceProvider
 
             $config = require $moduleConfigFile;
 
-            if (!($config['enabled'] ?? false)) {
-                continue;
-            }
+            // if (!($config['enabled'] ?? false)) {
+            //     continue;
+            // }
 
             // routes
             $routesFile = $modulePath . '/routes.php';
