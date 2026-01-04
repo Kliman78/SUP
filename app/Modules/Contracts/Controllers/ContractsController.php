@@ -3,13 +3,20 @@
 namespace App\Modules\Contracts\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Contracts\Models\Contracts;
 use Illuminate\Http\Request;
 
 class ContractsController extends Controller
 {
     public function index()
     {
-        return view('contracts::index');
+    $moduleConfig = require base_path('app/Modules/Contracts/module.php');
+
+    $actions = $moduleConfig['actions'] ?? [];
+
+    $contracts = Contracts::all();
+
+    return view('contracts::index', compact('contracts', 'actions'));
     }
 
     public function create()
